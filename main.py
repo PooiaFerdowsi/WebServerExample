@@ -1,4 +1,5 @@
 import GETFQDN 
+#
 import socket # import socket.getfqdn
 from time import time # time() function
 import sys
@@ -248,60 +249,17 @@ class BaseServer:
         self.server_close()
         
 
-class TCPServer(BaseServer):
 
-    """Base class for various socket-based server classes.
-
-    Defaults to synchronous IP stream (i.e., TCP).
-
-    Methods for the caller:
-
-    - __init__(server_address, RequestHandlerClass, bind_and_activate=True)
-    - serve_forever(poll_interval=0.5)
-    - shutdown()
-    - handle_request()  # if you don't use serve_forever()
-    - fileno() -> int   # for selector
-
-    Methods that may be overridden:
-
-    - server_bind()
-    - server_activate()
-    - get_request() -> request, client_address
-    - handle_timeout()
-    - verify_request(request, client_address)
-    - process_request(request, client_address)
-    - shutdown_request(request)
-    - close_request(request)
-    - handle_error()
-
-    Methods for derived classes:
-
-    - finish_request(request, client_address)
-
-    Class variables that may be overridden by derived classes or
-    instances:
-
-    - timeout
-    - address_family
-    - socket_type
-    - request_queue_size (only for stream sockets)
-    - allow_reuse_address
-
-    Instance variables:
-
-    - server_address
-    - RequestHandlerClass
-    - socket
-
-    """
-
+        
+class HTTPServer(BaseServer):
+    
     address_family = socket.AF_INET
 
     socket_type = socket.SOCK_STREAM
 
     request_queue_size = 5
-
-    allow_reuse_address = False
+    
+    allow_reuse_address = 1    # Seems to make sense in testing environment
 
     def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True):
         """Constructor.  May be extended, do not override."""
@@ -315,17 +273,13 @@ class TCPServer(BaseServer):
             except:
                 self.server_close()
                 raise
-
+            
     def server_bind(self):
-        """Called by constructor to bind the socket.
-
-        May be overridden.
-
-        """
-        if self.allow_reuse_address:
-            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(self.server_address)
-        self.server_address = self.socket.getsockname()
+        """Override server_bind to store the server name."""
+        socketserver.TCPServer.server_bind(self)
+        host, port = self.server_address[:2]
+        self.server_name = GETFQDN.getfqdn(host)
+        self.server_port = port
 
     def server_activate(self):
         """Called by constructor to activate the server.
@@ -372,15 +326,3 @@ class TCPServer(BaseServer):
     def close_request(self, request):
         """Called to clean up an individual request."""
         request.close()
-
-        
-class HTTPServer(TCPServer):
-
-    allow_reuse_address = 1    # Seems to make sense in testing environment
-
-    def server_bind(self):
-        """Override server_bind to store the server name."""
-        socketserver.TCPServer.server_bind(self)
-        host, port = self.server_address[:2]
-        self.server_name = GETFQDN.getfqdn(host)
-        self.server_port = port
