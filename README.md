@@ -17,4 +17,6 @@ versions
 
 3 - this version had about 500/600 line code
 
-4 - now - this version had about 400 line code
+4 - this version had about 400 line code
+
+5 - now - this version has about 400 line code but in the main.py I delete a method an space of 11k change to 10k
