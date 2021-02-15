@@ -1,6 +1,5 @@
-import GETFQDN 
-#
-import socket # import socket.getfqdn
+import getfqdnmod
+import socket # in 266 line
 from time import time # time() function
 import sys
 import threading # threading.Event 
@@ -278,7 +277,7 @@ class HTTPServer(BaseServer):
         """Override server_bind to store the server name."""
         socketserver.TCPServer.server_bind(self)
         host, port = self.server_address[:2]
-        self.server_name = GETFQDN.getfqdn(host)
+        self.server_name = getfqdnmod.getfqdn(host)
         self.server_port = port
 
     def server_activate(self):
@@ -296,7 +295,7 @@ class HTTPServer(BaseServer):
 
         """
         self.socket.close()
-
+        
     def fileno(self):
         """Return socket file number.
 
@@ -305,13 +304,6 @@ class HTTPServer(BaseServer):
         """
         return self.socket.fileno()
 
-    def get_request(self):
-        """Get the request and client address from the socket.
-
-        May be overridden.
-
-        """
-        return self.socket.accept()
 
     def shutdown_request(self, request):
         """Called to shutdown and close an individual request."""
