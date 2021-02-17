@@ -1,5 +1,5 @@
 import getfqdnmod
-#
+from handler import *
 import socket # import socket.getfqdn
 from time import time # time() function
 import sys
