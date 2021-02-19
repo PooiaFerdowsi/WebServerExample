@@ -91,7 +91,7 @@ class BaseServer:
                     if ready:
                         self._handle_request_noblock()
 
-                    self.service_actions()
+                    pass
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
@@ -106,13 +106,7 @@ class BaseServer:
         self.__shutdown_request = True
         self.__is_shut_down.wait()
 
-    def service_actions(self):
-        """Called by the serve_forever() loop.
 
-        May be overridden by a subclass / Mixin to implement any code that
-        needs to be run during the loop.
-        """
-        pass
 
     # The distinction between handling, getting, processing and finishing a
     # request is fairly arbitrary.  Remember:
