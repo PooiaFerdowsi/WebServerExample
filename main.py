@@ -1,5 +1,5 @@
 import getfqdnmod
-from handler import *
+from handler import * # in handler directory
 import socket # import socket.getfqdn
 from time import time # time() function
 import sys
@@ -66,13 +66,6 @@ class BaseServer:
         self.__is_shut_down = threading.Event()
         self.__shutdown_request = False
 
-    def server_activate(self):
-        """Called by constructor to activate the server.
-
-        May be overridden.
-
-        """
-        pass
 
     def serve_forever(self, poll_interval=0.5):
         """Handle one request at a time until shutdown.
