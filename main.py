@@ -1,6 +1,6 @@
 import getfqdnmod
 from handler import * # in handler directory
-import socket # import socket.getfqdn
+import socket 
 from time import time # time() function
 import sys
 import threading # threading.Event 
